@@ -1,0 +1,80 @@
+
+ @font-face {
+   font-family: myFirstFont;
+   src: url('../fonts/RADIOLANDSLIM.ttf');
+}
+html {  
+ 	font-family: myFirstFont;
+	@font-face {
+	   font-family: myFirstFont;
+	   src: url('../fonts/RADIOLANDSLIM.ttf');
+	}
+
+	* {
+	   font-family: myFirstFont;
+	}
+	
+
+}
+body {
+  background-color: black;
+}
+.workplace{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 25%;
+}
+
+.pads {
+  display: grid;
+  grid-template-columns: repeat(4, 150px);
+  grid-template-rows: repeat(4, 150px);
+  position: absolute;
+  z-index: 2;
+  top: 30%;
+  left: 28%;
+}
+.db {
+  width: 60%;
+  height: 60%;
+  border: none;
+  background-image: url('../imgs/dg.svg');
+  background-size: cover;
+  background-color: black;
+  
+}
+.mb {
+  width: 60%;
+  height: 60%;
+  border: none;
+  background-image: url('../imgs/mg.svg');
+  background-size: cover;
+  background-color: black;
+}
+.sb {
+  width: 60%;
+  height: 60%;
+  border: none;
+  background-image: url('../imgs/sg.svg');
+  background-size: cover;
+  background-color: black;
+}
+
+
