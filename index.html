@@ -11,14 +11,14 @@
         <div id="workplace">
             <img src="imgs/base.svg" class="center">
             <div class="pads">
-                <button onclick="sound1b.play()" class="db" id="1b"></button>
-                <button onclick="sound2b.play()" class="db" id="2b"></button>
-                <button onclick="sound3b.play()" class="db" id="3b"></button>
-                <button onclick="sound4b.play()" class="db" id="4b"></button>
-                <button onclick="sound5b.play()" class="mb" id="5b"></button>
-                <button onclick="sound6b.play()" class="mb" id="6b"></button>
-                <button onclick="sound7b.play()" class="mb" id="7b"></button>
-                <button onclick="sound8b.play()" class="mb" id="8b"></button>
+                <button onclick="sound1b.play()" ondblclick="sound1b.stop()" class="db" id="1b"></button>
+                <button onclick="sound2b.play()" ondblclick="sound2b.stop()" class="db" id="2b"></button>
+                <button onclick="sound3b.play()" ondblclick="sound3b.stop()" class="db" id="3b"></button>
+                <button onclick="sound4b.play()" ondblclick="sound4b.stop()" class="db" id="4b"></button>
+                <button onclick="sound5b.play()" ondblclick="sound5b.stop()" class="mb" id="5b"></button>
+                <button onclick="sound6b.play()" ondblclick="sound6b.stop()" class="mb" id="6b"></button>
+                <button onclick="sound7b.play()" ondblclick="sound7b.stop()" class="mb" id="7b"></button>
+                <button onclick="sound8b.play()" ondblclick="sound8b.stop()" class="mb" id="8b"></button>
                 <button onclick="sound9b.play()" class="sb" id="9b"></button>
                 <button onclick="sound10b.play()" class="sb" id="10b"></button>
                 <button onclick="sound11b.play()" class="sb" id="11b"></button>
@@ -30,6 +30,7 @@
             </div>
         </div>
         <script type="text/javascript">
+
             const createSound = (src, volume, loop) => {
               return new Howl({
                 src: [src],
