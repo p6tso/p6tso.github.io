@@ -81,9 +81,9 @@ body {
     background-image: url('../imgs/do.svg');
 }
 .mb:active{
-    background-image: url('../imgs/mo.svg');
+    background-image: url('../imgs/so.svg');
 }
 .sb:active{
-    background-image: url('../imgs/so.svg');
+    background-image: url('../imgs/mo.svg');
 }
 
