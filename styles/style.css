@@ -1,9 +1,8 @@
-
- @font-face {
+@font-face {
    font-family: myFirstFont;
    src: url('../fonts/RADIOLANDSLIM.ttf');
 }
-html {  
+html {
  	font-family: myFirstFont;
 	@font-face {
 	   font-family: myFirstFont;
@@ -13,7 +12,7 @@ html {
 	* {
 	   font-family: myFirstFont;
 	}
-	
+
 
 }
 body {
@@ -58,8 +57,9 @@ body {
   background-image: url('../imgs/dg.svg');
   background-size: cover;
   background-color: black;
-  
+
 }
+
 .mb {
   width: 60%;
   height: 60%;
@@ -68,6 +68,7 @@ body {
   background-size: cover;
   background-color: black;
 }
+
 .sb {
   width: 60%;
   height: 60%;
@@ -76,5 +77,13 @@ body {
   background-size: cover;
   background-color: black;
 }
-
+.db:active{
+    background-image: url('../imgs/do.svg');
+}
+.mb:active{
+    background-image: url('../imgs/mo.svg');
+}
+.sb:active{
+    background-image: url('../imgs/so.svg');
+}
 
