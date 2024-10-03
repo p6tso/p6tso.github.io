@@ -1,61 +1,136 @@
 <!DOCTYPE html>
-    <html>
-        <head>
-            <meta charset="UTF-8">
-            <link rel="stylesheet" href="styles/style.css">
-            <script src="https://cdn.jsdelivr.net/npm/howler"></script>
-            <title>p6_sample</title>
-        </head>
-    <body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/howler"></script>
+    <title>p6_sample</title>
+    <style>
+        @font-face {
+            font-family: myFirstFont;
+            src: url('../fonts/RADIOLANDSLIM.ttf');
+        }
 
-        <div id="workplace">
-            <img src="imgs/base.svg" class="center">
-            <div class="pads">
-                <button onclick="sound1b.play()" ondblclick="sound1b.stop()" class="db" id="1b"></button>
-                <button onclick="sound2b.play()" ondblclick="sound2b.stop()" class="db" id="2b"></button>
-                <button onclick="sound3b.play()" ondblclick="sound3b.stop()" class="db" id="3b"></button>
-                <button onclick="sound4b.play()" ondblclick="sound4b.stop()" class="db" id="4b"></button>
-                <button onclick="sound5b.play()" ondblclick="sound5b.stop()" class="mb" id="5b"></button>
-                <button onclick="sound6b.play()" ondblclick="sound6b.stop()" class="mb" id="6b"></button>
-                <button onclick="sound7b.play()" ondblclick="sound7b.stop()" class="mb" id="7b"></button>
-                <button onclick="sound8b.play()" ondblclick="sound8b.stop()" class="mb" id="8b"></button>
-                <button onclick="sound9b.play()" class="sb" id="9b"></button>
-                <button onclick="sound10b.play()" class="sb" id="10b"></button>
-                <button onclick="sound11b.play()" class="sb" id="11b"></button>
-                <button onclick="sound12b.play()" class="sb" id="12b"></button>
-                <button onclick="sound13b.play()" class="sb" id="13b"></button>
-                <button onclick="sound14b.play()" class="sb" id="14b"></button>
-                <button onclick="sound15b.play()" class="sb" id="15b"></button>
-                <button onclick="sound16b.play()" class="sb" id="16b"></button>
-            </div>
-        </div>
-        <script type="text/javascript">
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: myFirstFont;
+            height: 100%;
+            overflow: hidden; /* Prevent scrolling */
+        }
 
-            const createSound = (src, volume, loop) => {
-              return new Howl({
-                src: [src],
-                volume: volume,
-                loop: loop
-              });
-            };
+        body {
+            background-color: black;
+        }
 
-            const sound1b = createSound('sounds/drum loop/looperman-l-1791901-0356831-hipster-boom-bap-with-percussions.wav', 0.5, true);
-            const sound2b = createSound('sounds/drum loop/looperman-l-6075751-0356884-boom-bap-2-suede.wav', 0.5, true);
-            const sound3b = createSound('sounds/drum loop/looperman-l-3342587-0357599-anxiety-drums.wav', 0.5, true);
-            const sound4b = createSound('sounds/drum loop/looperman-l-1735918-0357396-boom-bap-drums-8.wav', 0.5, true);
-            const sound5b = createSound('sounds/lofi melody/looperman-l-2512714-0355547-piranha-plant-pad.wav', 0.5, true);
-            const sound6b = createSound('sounds/lofi melody/looperman-l-3109920-0358510-dope-electric-piano.wav', 0.5, true);
-            const sound7b = createSound('sounds/lofi melody/looperman-l-3518626-0358654-rare-lofi-melody.wav', 0.5, true);
-            const sound8b = createSound('sounds/lofi melody/looperman-l-2354523-0357798-scratchy-lofi-sad-guitar.wav', 0.5, true);
-            const sound9b = createSound('sounds/sounds/727513__djericmark__snare-hit-001.wav', 0.5, false);
-            const sound10b = createSound('sounds/sounds/701103__8bitmyketison__808-drop-it-like-its-not-a.wav', 0.5, false);
-            const sound11b = createSound('sounds/sounds/701084__8bitmyketison__multimedia-water-drop-lo-fi.wav', 0.5, false);
-            const sound12b = createSound('sounds/sounds/721159__nfrae__drunkard.wav', 0.5, false);
-            const sound13b = createSound('sounds/sounds/707071__noceur100__chant.wav', 0.5, false);
-            const sound14b = createSound('sounds/sounds/701064__8bitmyketison__rubberband-snapping.wav', 0.5, false);
-            const sound15b = createSound('sounds/sounds/699869__jaymisc__169-aaaah-hq.wav', 0.5, false);
-            const sound16b = createSound('sounds/sounds/727651__cjspellsfish__harsh-short-zap.wav', 0.5, false);
+        .workplace {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full height of the viewport */
+            position: relative;
+            background-image: url('imgs/base.svg');
+            background-size: cover; /* Ensure the image covers the entire area */
+            background-position: center;
+        }
 
-    </script>
-    </body>
+        .pads {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Responsive columns */
+            grid-template-rows: repeat(4, 1fr);
+            gap: 5px; /* Reduced gap */
+            position: absolute;
+            width: 100%; /* Full width */
+            height: 70%; /* Two-thirds of the height */
+            bottom: 2%; /* Align to the bottom */
+            padding: 5px; /* Padding around the grid */
+            box-sizing: border-box; /* Include padding in width/height */
+        }
+
+        button {
+            border: none;
+            background-size: cover;
+            cursor: pointer;
+            width: 100%; /* Fill the grid cell */
+            height: 0; /* Set height to 0 for square */
+            padding-bottom: 100%; /* Maintain aspect ratio for square */
+            position: relative; /* To allow absolute positioning of background */
+        }
+
+        .db {
+            background-image: url('../imgs/dg.svg');
+        }
+
+        .mb {
+            background-image: url('../imgs/mg.svg');
+        }
+
+        .sb {
+            background-image: url('../imgs/sg.svg');
+        }
+
+        .db:active {
+            background-image: url('../imgs/do.svg');
+        }
+
+        .mb:active {
+            background-image: url('../imgs/so.svg');
+        }
+
+        .sb:active {
+            background-image: url('../imgs/mo.svg');
+        }
+    </style>
+</head>
+<body>
+
+<div id="workplace" class="workplace">
+    <div class="pads">
+        <button onclick="sound1b.play()" ondblclick="sound1b.stop()" class="db" id="1b"></button>
+        <button onclick="sound2b.play()" ondblclick="sound2b.stop()" class="db" id="2b"></button>
+        <button onclick="sound3b.play()" ondblclick="sound3b.stop()" class="db" id="3b"></button>
+        <button onclick="sound4b.play()" ondblclick="sound4b.stop()" class="db" id="4b"></button>
+        <button onclick="sound5b.play()" ondblclick="sound5b.stop()" class="mb" id="5b"></button>
+        <button onclick="sound6b.play()" ondblclick="sound6b.stop()" class="mb" id="6b"></button>
+        <button onclick="sound7b.play()" ondblclick="sound7b.stop()" class="mb" id="7b"></button>
+        <button onclick="sound8b.play()" ondblclick="sound8b.stop()" class="mb" id="8b"></button>
+        <button onclick="sound9b.play()" class="sb" id="9b"></button>
+        <button onclick="sound10b.play()" class="sb" id="10b"></button>
+        <button onclick="sound11b.play()" class="sb" id="11b"></button>
+        <button onclick="sound12b.play()" class="sb" id="12b"></button>
+        <button onclick="sound13b.play()" class="sb" id="13b"></button>
+        <button onclick="sound14b.play()" class="sb" id="14b"></button>
+        <button onclick="sound15b.play()" class="sb" id="15b"></button>
+        <button onclick="sound16b.play()" class="sb" id="16b"></button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    const createSound = (src, volume, loop) => {
+        return new Howl({
+            src: [src],
+            volume: volume,
+            loop: loop
+        });
+    };
+
+    const sound1b = createSound('sounds/drum loop/looperman-l-1791901-0356831-hipster-boom-bap-with-percussions.wav', 0.5, true);
+    const sound2b = createSound('sounds/drum loop/looperman-l-6075751-0356884-boom-bap-2-suede.wav', 0.5, true);
+    const sound3b = createSound('sounds/drum loop/looperman-l-3342587-0357599-anxiety-drums.wav', 0.5, true);
+    const sound4b = createSound('sounds/drum loop/looperman-l-1735918-0357396-boom-bap-drums-8.wav', 0.5, true);
+    const sound5b = createSound('sounds/lofi melody/looperman-l-2512714-0355547-piranha-plant-pad.wav', 0.5, true);
+    const sound6b = createSound('sounds/lofi melody/looperman-l-3109920-0358510-dope-electric-piano.wav', 0.5, true);
+    const sound7b = createSound('sounds/lofi melody/looperman-l-3518626-0358654-rare-lofi-melody.wav', 0.5, true);
+    const sound8b = createSound('sounds/lofi melody/looperman-l-2354523-0357798-scratchy-lofi-sad-guitar.wav', 0.5, true);
+    const sound9b = createSound('sounds/sounds/727513__djericmark__snare-hit-001.wav', 0.5, false);
+    const sound10b = createSound('sounds/sounds/701103__8bitmyketison__808-drop-it-like-its-not-a.wav', 0.5, false);
+    const sound11b = createSound('sounds/sounds/701084__8bitmyketison__multimedia-water-drop-lo-fi.wav', 0.5, false);
+    const sound12b = createSound('sounds/sounds/721159__nfrae__drunkard.wav', 0.5, false);
+    const sound13b = createSound('sounds/sounds/707071__noceur100__chant.wav', 0.5, false);
+    const sound14b = createSound('sounds/sounds/701064__8bitmyketison__rubberband-snapping.wav', 0.5, false);
+    const sound15b = createSound('sounds/sounds/699869__jaymisc__169-aaaah-hq.wav', 0.5, false);
+    const sound16b = createSound('sounds/sounds/727651__cjspellsfish__harsh-short-zap.wav', 0.5, false);
+</script>
+
+</body>
 </html>
