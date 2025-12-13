@@ -1,8 +1,8 @@
-# DOCS
+# Zombie-farm DOCS
 
 -----
 
-* Основная информация
-* backend
-* frontend
-* design
+* [Основная информация]()
+* [backend]()
+* [frontend]()
+* [design]()
