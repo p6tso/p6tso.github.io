@@ -1,10 +1,2 @@
-theme: minima
-title: "study static"
-author: ""
-description: ""
-
-minima:
-  skin: dark
-  social_links: false
-
-show_excerpts: false
+theme: null
+markdown: kramdown
