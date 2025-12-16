@@ -40,47 +40,40 @@
 ### PlantUML код для ER-диаграммы
 
 ```mermaid
-@startuml UniArchive_ER_Diagram
-
-!define primary_key #aliceblue
-!define foreign_key #lightcoral
-
-entity "files" {
-  *id : uuid <<PK>>
-  --
-  *original_name : varchar(512)
-  *storage_path : varchar(1024)
-  *subject : varchar(256)
-  *uploaded_at : timestamp
-  file_size : bigint
-  mime_type : varchar(128)
-  uploaded_by : varchar(128)
-}
-
-entity "file_texts" {
-  *file_id : uuid <<PK>> <<FK>>
-  --
-  extracted_text : text
-  processed_at : timestamp
-  processing_status : varchar(32)
-  error_message : text
-}
-
-files ||..o{ file_texts
-
-' Добавляем индексы
-note bottom of files
-  Индексы:
-  - idx_files_subject (subject)
-  - idx_files_uploaded_at (uploaded_at)
-  - idx_files_subject_date (subject, uploaded_at)
-end note
-
-note bottom of file_texts
-  Индекс:
-  - idx_file_texts_status (processing_status)
-end note
-
+erDiagram
+    files {
+        uuid id PK
+        string original_name
+        string storage_path
+        string subject
+        timestamp uploaded_at
+        bigint file_size
+        string mime_type
+        string uploaded_by
+    }
+    
+    file_texts {
+        uuid file_id PK,FK
+        text extracted_text
+        timestamp processed_at
+        string processing_status
+        text error_message
+    }
+    
+    files ||--o| file_texts : "id = file_id"
+    
+    note right of files
+        Индексы:
+        - idx_files_subject (subject)
+        - idx_files_uploaded_at (uploaded_at)
+        - idx_files_subject_date (subject, uploaded_at)
+    end note
+    
+    note right of file_texts
+        Индекс:
+        - idx_file_texts_status (processing_status)
+    end note
+    
 ```
 
 
