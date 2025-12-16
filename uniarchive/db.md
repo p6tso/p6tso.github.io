@@ -40,8 +40,11 @@
 ### PlantUML код для ER-диаграммы
 
 ```mermaid
+---
+title: UniArchive Database Schema
+---
 erDiagram
-    files {
+    FILES {
         uuid id PK
         string original_name
         string storage_path
@@ -52,7 +55,7 @@ erDiagram
         string uploaded_by
     }
     
-    file_texts {
+    FILE_TEXTS {
         uuid file_id PK,FK
         text extracted_text
         timestamp processed_at
@@ -60,21 +63,38 @@ erDiagram
         text error_message
     }
     
-    files ||--o| file_texts : "id = file_id"
+    FILES_AUDIT {
+        int id PK
+        uuid file_id FK
+        timestamp changed_at
+        string changed_by
+        string operation
+        jsonb old_data
+        jsonb new_data
+    }
     
-    note right of files
+    FILES ||--|| FILE_TEXTS : "has"
+    FILES ||--o{ FILES_AUDIT : "logs"
+    
+    note right of FILES
         Индексы:
-        - idx_files_subject (subject)
-        - idx_files_uploaded_at (uploaded_at)
-        - idx_files_subject_date (subject, uploaded_at)
+        - idx_files_subject
+        - idx_files_uploaded_at
+        - idx_files_subject_date
     end note
     
-    note right of file_texts
-        Индекс:
-        - idx_file_texts_status (processing_status)
+    note right of FILE_TEXTS
+        Индексы:
+        - idx_file_texts_status
+        - idx_file_texts_gin (GIN для текста)
     end note
     
+    note right of FILES_AUDIT
+        Создается триггером для
+        аудита изменений в files
+    end note
 ```
+
 
 
 
