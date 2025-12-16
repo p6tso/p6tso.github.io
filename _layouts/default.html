@@ -6,20 +6,16 @@
     <title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 
-    <!-- Highlight.js для подсветки кода (стиль GitHub) -->
+    <!-- Highlight.js -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 
-    <!-- Mermaid для диаграмм (UML, C4, и т.д.) -->
+    <!-- Mermaid -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
 
-    <!-- MathJax для математических формул (опционально) -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
     <style>
-        /* Стили для диаграмм */
+        /* Стили для Mermaid */
         .mermaid {
             background-color: var(--pre-bg);
             border-radius: 6px;
@@ -34,38 +30,16 @@
             height: auto;
         }
 
-        /* Стили для таблиц как в GitHub */
-        table {
-            border-spacing: 0;
-            border-collapse: collapse;
-            display: block;
-            width: max-content;
-            max-width: 100%;
-            overflow: auto;
+        /* Скрыть исходный код Mermaid */
+        .language-mermaid {
+            display: none;
         }
 
-        /* Стили для блоков кода */
-        .highlight {
-            background-color: var(--pre-bg);
-            border-radius: 6px;
-            margin: 16px 0;
-        }
-
-        .highlight pre {
-            margin: 0;
-            padding: 16px;
-            overflow: auto;
-            font-size: 85%;
-            line-height: 1.45;
-        }
-
-        /* Стили для inline кода */
-        code:not(pre code) {
-            padding: 0.2em 0.4em;
-            margin: 0;
-            font-size: 85%;
-            background-color: rgba(110, 118, 129, 0.4);
-            border-radius: 6px;
+        /* Показать только блоки с диаграммами */
+        pre.mermaid {
+            display: block !important;
+            background: transparent !important;
+            padding: 0 !important;
         }
     </style>
 </head>
@@ -75,68 +49,69 @@
 </div>
 
 <script>
-    // Инициализация Highlight.js
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.querySelectorAll('pre code').forEach((el) => {
+    // Функция для обработки Mermaid диаграмм
+    function initMermaid() {
+        // Находим все блоки кода с классом language-mermaid
+        const mermaidElements = document.querySelectorAll('code.language-mermaid');
+
+        if (mermaidElements.length > 0) {
+            mermaid.initialize({
+                startOnLoad: false, // отключаем авто-старт
+                theme: 'dark',
+                securityLevel: 'loose',
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true
+                },
+                er: {
+                    useMaxWidth: true
+                }
+            });
+
+            // Обрабатываем каждый блок
+            mermaidElements.forEach((element) => {
+                const parent = element.parentElement;
+                const mermaidContent = element.textContent.trim();
+
+                // Создаем новый div для Mermaid
+                const mermaidDiv = document.createElement('div');
+                mermaidDiv.className = 'mermaid';
+                mermaidDiv.textContent = mermaidContent;
+
+                // Заменяем родительский элемент (pre) на наш div
+                if (parent && parent.tagName === 'PRE') {
+                    parent.parentNode.replaceChild(mermaidDiv, parent);
+                } else {
+                    // Если нет pre, добавляем после элемента
+                    element.parentNode.insertBefore(mermaidDiv, element.nextSibling);
+                    element.style.display = 'none';
+                }
+            });
+
+            // Запускаем рендеринг
+            mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+        }
+    }
+
+    // Функция для Highlight.js
+    function initHighlight() {
+        document.querySelectorAll('pre code:not(.language-mermaid)').forEach((el) => {
             hljs.highlightElement(el);
         });
+    }
+
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', () => {
+        initHighlight();
+        initMermaid();
     });
 
-    // Инициализация Mermaid
-    mermaid.initialize({
-        startOnLoad: true,
-        theme: 'dark',
-        flowchart: {
-            useMaxWidth: true,
-            htmlLabels: true,
-            curve: 'basis'
-        },
-        sequence: {
-            useMaxWidth: true,
-            showSequenceNumbers: true
-        },
-        er: {
-            useMaxWidth: true
-        },
-        pie: {
-            useMaxWidth: true
-        },
-        journey: {
-            useMaxWidth: true
-        },
-        gitGraph: {
-            useMaxWidth: true
-        },
-        c4: {
-            useMaxWidth: true
-        }
-    });
-</script>
-
-<!-- Плагины для дополнительных возможностей -->
-<script>
-    // Автоматическое добавление заголовков к диаграммам
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.language-mermaid').forEach(function(el) {
-            const content = el.textContent.trim();
-            if (content.startsWith('---') || content.includes('title:')) {
-                return; // Уже есть заголовок
-            }
-            const parent = el.parentElement;
-            if (parent && parent.classList.contains('mermaid')) {
-                const caption = parent.getAttribute('data-caption');
-                if (caption) {
-                    const figcaption = document.createElement('figcaption');
-                    figcaption.style.textAlign = 'center';
-                    figcaption.style.fontStyle = 'italic';
-                    figcaption.style.marginTop = '8px';
-                    figcaption.style.color = '#8b949e';
-                    figcaption.textContent = caption;
-                    parent.appendChild(figcaption);
-                }
-            }
-        });
-    });
+    // Если контент загружается динамически
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMermaid);
+    } else {
+        initMermaid();
+    }
 </script>
 </body>
 </html>

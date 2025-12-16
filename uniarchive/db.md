@@ -83,36 +83,30 @@ erDiagram
 
 ### 1. File Upload Service
 ```sql
--- Вставляет запись при загрузке файла
 INSERT INTO files (id, original_name, storage_path, subject, file_size, mime_type, uploaded_by)
 VALUES (:id, :original_name, :storage_path, :subject, :file_size, :mime_type, :uploaded_by);
 
--- Создает запись-заглушку для асинхронной обработки
 INSERT INTO file_texts (file_id, processing_status) VALUES (:file_id, 'pending');
 ```
 
 ### 2. Text Extraction Service
 ```sql
--- Находит файлы для обработки
 SELECT f.id, f.storage_path, f.mime_type 
 FROM files f
 JOIN file_texts ft ON f.id = ft.file_id
 WHERE ft.processing_status = 'pending'
 LIMIT 10;
 
--- Обновляет статус на "в обработке"
 UPDATE file_texts 
 SET processing_status = 'processing', processed_at = NOW()
 WHERE file_id = :file_id;
 
--- Сохраняет извлеченный текст
 UPDATE file_texts 
 SET extracted_text = :text, 
     processing_status = 'completed',
     processed_at = NOW()
 WHERE file_id = :file_id;
 
--- Обработка ошибки
 UPDATE file_texts 
 SET processing_status = 'failed',
     error_message = :error_message,
@@ -122,7 +116,6 @@ WHERE file_id = :file_id;
 
 ### 3. Search API Service
 ```sql
--- Поиск файлов с фильтрацией по предмету и сортировкой
 SELECT f.id, f.original_name, f.subject, f.uploaded_at, f.file_size,
        ft.processing_status, ft.processed_at
 FROM files f
@@ -131,7 +124,6 @@ WHERE f.subject = :subject  -- фильтр по предмету
 ORDER BY f.uploaded_at DESC  -- сортировка по дате
 LIMIT :limit OFFSET :offset;
 
--- Получение полной информации о файле
 SELECT f.*, ft.extracted_text, ft.processing_status
 FROM files f
 LEFT JOIN file_texts ft ON f.id = ft.file_id
@@ -142,7 +134,6 @@ WHERE f.id = :file_id;
 
 ### Версия 1.0 (Initial Schema)
 ```sql
--- Создание таблицы files
 CREATE TABLE files (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     original_name VARCHAR(512) NOT NULL,
@@ -154,7 +145,6 @@ CREATE TABLE files (
     uploaded_by VARCHAR(128)
 );
 
--- Создание таблицы file_texts
 CREATE TABLE file_texts (
     file_id UUID PRIMARY KEY REFERENCES files(id) ON DELETE CASCADE,
     extracted_text TEXT,
@@ -163,7 +153,6 @@ CREATE TABLE file_texts (
     error_message TEXT
 );
 
--- Создание индексов
 CREATE INDEX idx_files_subject ON files(subject);
 CREATE INDEX idx_files_uploaded_at ON files(uploaded_at DESC);
 CREATE INDEX idx_files_subject_date ON files(subject, uploaded_at DESC);
@@ -174,7 +163,6 @@ CREATE INDEX idx_file_texts_status ON file_texts(processing_status);
 
 ### 1. Партиционирование (для больших объемов)
 ```sql
--- Партиционирование таблицы files по предмету
 CREATE TABLE files_partitioned (
     -- те же поля что и в files
 ) PARTITION BY LIST (subject);
@@ -182,11 +170,9 @@ CREATE TABLE files_partitioned (
 
 ### 2. Полнотекстовый поиск
 ```sql
--- Добавление GIN индекса для поиска по тексту
 CREATE INDEX idx_file_texts_gin ON file_texts 
 USING gin(to_tsvector('russian', extracted_text));
 
--- Поиск по извлеченному тексту
 SELECT f.* 
 FROM files f
 JOIN file_texts ft ON f.id = ft.file_id
@@ -196,7 +182,6 @@ AND to_tsvector('russian', ft.extracted_text) @@ to_tsquery('russian', 'лине
 
 ### 3. Статистика и мониторинг
 ```sql
--- Статистика по предметам
 SELECT subject, COUNT(*) as file_count, 
        SUM(file_size) as total_size,
        AVG(file_size) as avg_size
@@ -204,7 +189,6 @@ FROM files
 GROUP BY subject 
 ORDER BY file_count DESC;
 
--- Статистика обработки
 SELECT processing_status, COUNT(*) 
 FROM file_texts 
 GROUP BY processing_status;
@@ -219,7 +203,6 @@ pg_dump -U postgres -d uniarchive -t files -t file_texts > backup_$(date +%Y%m%d
 
 ### Восстановление
 ```sql
--- Восстановление схемы и данных
 psql -U postgres -d uniarchive < backup_file.sql
 ```
 
@@ -227,21 +210,17 @@ psql -U postgres -d uniarchive < backup_file.sql
 
 ### 1. Роли и привилегии
 ```sql
--- Создание роли для сервисов
 CREATE ROLE uniarchive_service LOGIN PASSWORD 'secure_password';
 
--- Выдача минимально необходимых прав
 GRANT SELECT, INSERT, UPDATE ON files, file_texts TO uniarchive_service;
 GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO uniarchive_service;
 
--- Создание read-only роли для аналитики
 CREATE ROLE uniarchive_readonly;
 GRANT SELECT ON files, file_texts TO uniarchive_readonly;
 ```
 
 ### 2. Аудит изменений
 ```sql
--- Таблица для аудита изменений
 CREATE TABLE files_audit (
     id SERIAL PRIMARY KEY,
     file_id UUID REFERENCES files(id),
@@ -252,7 +231,6 @@ CREATE TABLE files_audit (
     new_data JSONB
 );
 
--- Триггер для отслеживания изменений
 CREATE OR REPLACE FUNCTION audit_files_change() 
 RETURNS TRIGGER AS $$
 BEGIN
@@ -272,5 +250,3 @@ CREATE TRIGGER files_audit_trigger
 AFTER INSERT OR UPDATE OR DELETE ON files
 FOR EACH ROW EXECUTE FUNCTION audit_files_change();
 ```
-
-Эта схема обеспечивает надежное хранение метаданных, поддерживает асинхронную обработку через статусы и оптимизирована для частых операций поиска по предмету и дате.
