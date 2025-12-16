@@ -75,24 +75,7 @@ erDiagram
     
     FILES ||--|| FILE_TEXTS : "has"
     FILES ||--o{ FILES_AUDIT : "logs"
-    
-    note right of FILES
-        Индексы:
-        - idx_files_subject
-        - idx_files_uploaded_at
-        - idx_files_subject_date
-    end note
-    
-    note right of FILE_TEXTS
-        Индексы:
-        - idx_file_texts_status
-        - idx_file_texts_gin (GIN для текста)
-    end note
-    
-    note right of FILES_AUDIT
-        Создается триггером для
-        аудита изменений в files
-    end note
+  
 ```
 
 
