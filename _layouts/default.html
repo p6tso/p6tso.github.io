@@ -3,12 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page.title }}</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+
+    <!-- Highlight.js для подсветки кода (стиль GitHub) -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+
+    <!-- Mermaid для диаграмм (UML, C4, и т.д.) -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+
+    <!-- MathJax для математических формул (опционально) -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Стили для диаграмм */
+        .mermaid {
+            background-color: var(--pre-bg);
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            overflow: auto;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Стили для таблиц как в GitHub */
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            display: block;
+            width: max-content;
+            max-width: 100%;
+            overflow: auto;
+        }
+
+        /* Стили для блоков кода */
+        .highlight {
+            background-color: var(--pre-bg);
+            border-radius: 6px;
+            margin: 16px 0;
+        }
+
+        .highlight pre {
+            margin: 0;
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+        }
+
+        /* Стили для inline кода */
+        code:not(pre code) {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(110, 118, 129, 0.4);
+            border-radius: 6px;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
+<div class="container markdown-body">
     {{ content }}
 </div>
+
+<script>
+    // Инициализация Highlight.js
+    document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('pre code').forEach((el) => {
+            hljs.highlightElement(el);
+        });
+    });
+
+    // Инициализация Mermaid
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        flowchart: {
+            useMaxWidth: true,
+            htmlLabels: true,
+            curve: 'basis'
+        },
+        sequence: {
+            useMaxWidth: true,
+            showSequenceNumbers: true
+        },
+        er: {
+            useMaxWidth: true
+        },
+        pie: {
+            useMaxWidth: true
+        },
+        journey: {
+            useMaxWidth: true
+        },
+        gitGraph: {
+            useMaxWidth: true
+        },
+        c4: {
+            useMaxWidth: true
+        }
+    });
+</script>
+
+<!-- Плагины для дополнительных возможностей -->
+<script>
+    // Автоматическое добавление заголовков к диаграммам
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.language-mermaid').forEach(function(el) {
+            const content = el.textContent.trim();
+            if (content.startsWith('---') || content.includes('title:')) {
+                return; // Уже есть заголовок
+            }
+            const parent = el.parentElement;
+            if (parent && parent.classList.contains('mermaid')) {
+                const caption = parent.getAttribute('data-caption');
+                if (caption) {
+                    const figcaption = document.createElement('figcaption');
+                    figcaption.style.textAlign = 'center';
+                    figcaption.style.fontStyle = 'italic';
+                    figcaption.style.marginTop = '8px';
+                    figcaption.style.color = '#8b949e';
+                    figcaption.textContent = caption;
+                    parent.appendChild(figcaption);
+                }
+            }
+        });
+    });
+</script>
 </body>
 </html>

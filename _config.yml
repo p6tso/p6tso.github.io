@@ -1,2 +1,26 @@
+---
+# _config.yml
 theme: null
 markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  hard_wrap: false
+  auto_ids: true
+  toc_levels: 1..3
+
+sass:
+  sass_dir: _sass
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
+# Настройки для Jekyll 4.x
+highlighter: rouge
