@@ -6,7 +6,7 @@
 * [Архитектура](architecture.md)
 * [Спецификации](specifications/index.md)
 * [База данных](db.md)
-* [Контракты](contracts/index.md)
+* [Контракты](contracts.md)
 
 ---
 
