@@ -126,7 +126,6 @@ flowchart TD
     subgraph "Внешние системы"
         User1[["Студент"]]
         User2[["Преподаватель"]]
-        External[["Внешние системы<br/>LMS, Мессенджеры"]]
     end
     
     subgraph "UniArchive System"
@@ -135,7 +134,6 @@ flowchart TD
     
     User1 -->|"Загружает файлы<br/>Ищет материалы"| System
     User2 -->|"Публикует лекции<br/>Управляет курсами"| System
-    External -.->|"Интеграция (планируется)"| System
     
     System -->|"Хранит файлы"| Storage[["Облачное хранилище"]]
     System -->|"Сохраняет метаданные"| DB[["База данных"]]
