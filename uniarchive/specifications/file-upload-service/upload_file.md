@@ -90,17 +90,6 @@
 4. Отправка сообщения с таймаутом 5 секунд
 5. При ошибке: 3 попытки ретрая с экспоненциальной задержкой
 
-## 7. Обновить статус в БД
-- Установить статус файла - `pending`
-```sql
-UPDATE file_texts
-SET extracted_text = :text_content,
-processing_status = 'pending',
-processed_at = NOW(),
-text_length = LENGTH(:text_content),
-error_message = NULL
-WHERE file_id = :file_id
-```
 
 ## 7. Формирование ответа клиенту
 
