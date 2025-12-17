@@ -33,6 +33,8 @@
 - `processed_at` (TIMESTAMP WITH TIME ZONE, DEFAULT NOW()) - время обработки файла
 - `processing_status` (VARCHAR(32), DEFAULT 'pending') - статус обработки: pending/processing/completed/failed
 - `error_message` (TEXT) - сообщение об ошибке при обработке
+- `text_length` (INT) - длина текста
+
 
 **Индексы:**
 - `idx_file_texts_status` (processing_status) - для поиска необработанных файлов
