@@ -9,7 +9,7 @@
 
 ## 2. Построение SQL запроса
 
-**Базовый SQL запрос (без текста):**
+**Базовый SQL запрос:**
 ```sql
 SELECT 
     f.id, f.original_name, f.storage_path, f.subject, 
@@ -24,7 +24,7 @@ LEFT JOIN file_texts ft ON f.id = ft.file_id
 WHERE f.id = :file_id
 ```
 
-**Расширенный запрос (с текстом):**
+**Расширенный запрос :**
 ```sql
 -- Добавляется при include_text=true
 SELECT ft.extracted_text
@@ -47,7 +47,7 @@ WHERE ft.file_id = :file_id AND ft.processing_status = 'completed'
     - `has_error = processing_status = 'failed'`
 
 
-## 5. Формирование ответа
+## 4. Формирование ответа
 
 ### Основная структура ответа:
 ```json
@@ -105,22 +105,14 @@ WHERE ft.file_id = :file_id AND ft.processing_status = 'completed'
 }
 ```
 
-## 6. Проверка прав доступа
+## 5. Проверка прав доступа
 
 **Уровни доступа:**
 1. **Публичный доступ:** Все поля кроме `storage_path` и `uploaded_by`
 2. **Владелец файла:** Все поля, включая `uploaded_by`
 3. **Администратор:** Все поля, включая `storage_path`
 
-**Логика проверки:**
-```python
-if current_user.is_admin:
-    # Показать все
-elif current_user.id == file.uploaded_by:
-    # Показать все кроме storage_path
-else:
-    # Публичный доступ - скрыть uploaded_by и storage_path
-```
+
 
 ## Ошибки
 
@@ -153,5 +145,4 @@ CREATE INDEX idx_files_uploaded_by ON files(uploaded_by) WHERE uploaded_by IS NO
 ### Безопасность:
 - SQL injection protection через prepared statements
 - Ограничение длины возвращаемого текста (configurable)
-- Маскирование чувствительных данных в логах
 

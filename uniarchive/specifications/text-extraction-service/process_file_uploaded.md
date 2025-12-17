@@ -30,12 +30,7 @@ SET processing_status = 'processing',
     error_message = NULL
 WHERE file_id = :file_id
 ```
-4. Запись в `files_audit` (если таблица существует):
-```sql
-INSERT INTO files_audit (file_id, changed_by, operation, new_data)
-VALUES (:file_id, 'text-extraction-service', 'STATUS_UPDATE', 
-        '{"old_status": "pending", "new_status": "processing"}')
-```
+
 
 ## 3. Загрузка файла из MinIO
 
@@ -58,20 +53,18 @@ VALUES (:file_id, 'text-extraction-service', 'STATUS_UPDATE',
 
 ## 5. Извлечение текста
 
-**Общий алгоритм для всех процессоров:**
-1. Открытие файла в соответствующем режиме (бинарный/текстовый)
-2. Извлечение текста с учетом кодировки (для текстовых файлов)
-3. Обработка ошибок формата (поврежденные файлы)
-4. Очистка текста:
-    - Удаление лишних пробелов и переносов строк
-    - Нормализация Unicode
-    - Удаление управляющих символов
-5. Проверка минимальной длины извлеченного текста (≥ 10 символов)
+- Установить статус файла - `processing`
+```sql
+UPDATE file_texts
+SET extracted_text = :text_content,
+processing_status = 'processing',
+processed_at = NOW(),
+text_length = LENGTH(:text_content),
+error_message = NULL
+WHERE file_id = :file_id
+```
+- **Вызвать метод [extract_text_from_file](extract_text_from_file.md)**
 
-**Особенности по типам:**
-- **PDF:** Извлечение по страницам, сохранение структуры
-- **DOCX:** Извлечение параграфов, заголовков, списков
-- **TXT:** Сохранение оригинальной кодировки, обработка BOM
 
 ## 6. Обновление результата в БД
 
@@ -96,32 +89,6 @@ SET processing_status = 'failed',
 WHERE file_id = :file_id
 ```
 
-## 7. Отправка события в Kafka
-
-**Структура события `TextExtracted`:**
-```json
-{
-  "event_id": "uuid-v4",
-  "event_type": "TextExtracted",
-  "timestamp": "ISO 8601",
-  "producer": "text-extraction-service",
-  "data": {
-    "file_id": "исходный file_id",
-    "success": true/false,
-    "processing_time_ms": 1234,
-    "text_length": 3421,
-    "extracted_pages": 15,  // для PDF
-    "error_message": null или "описание ошибки",
-    "original_event_id": "event_id из FileUploaded"
-  }
-}
-```
-
-**Отправка:**
-1. Топик: `file.events.extracted`
-2. Ключ партиционирования: `file_id`
-3. Гарантии доставки: `acks=all`
-4. Retry policy: 3 попытки при ошибке
 
 ## 8. Очистка временных файлов
 
