@@ -5,24 +5,21 @@
 | Операция | Источник данных | Тип данных | Обязательность | Проверка |
 |----------|-----------------|------------|----------------|----------|
 | Получение file_id | Path parameter | String | Обязательно | Формат UUID v4 |
-| Извлечение uploaded_by | Контекст запроса (JWT/сессия) | String | Опционально | Для проверки прав доступа |
 
 ## 2. Проверка существования файла
 
 **Последовательные операции:**
 1. Преобразование строки file_id в объект UUID
 2. Подготовка SQL запроса к таблице `files`
-3. Добавление условия проверки прав (если uploaded_by не NULL)
-4. Выполнение запроса с таймаутом 3 секунды
+3Выполнение запроса с таймаутом 3 секунды
 
 **SQL запрос:**
 ```sql
-SELECT f.id, f.original_name, f.subject, f.uploaded_at, f.uploaded_by,
+SELECT f.id, f.original_name, f.subject, f.uploaded_at,
        ft.processing_status, ft.processed_at, ft.error_message
 FROM files f
 LEFT JOIN file_texts ft ON f.id = ft.file_id
 WHERE f.id = :file_id
-  AND (:uploaded_by IS NULL OR f.uploaded_by = :uploaded_by)
 LIMIT 1
 ```
 
@@ -30,20 +27,20 @@ LIMIT 1
 
 **Логика обработки:**
 1. Если запрос вернул 0 строк → файл не найден
-2. Если uploaded_by указан и не совпадает → недостаточно прав
-3. Извлечение данных из результата:
+2. Извлечение данных из результата:
     - Основные метаданные из таблицы `files`
     - Статус обработки из таблицы `file_texts`
     - Время обработки и ошибки (если есть)
 
 **Определение общего статуса:**
-| Условие | Статус | Описание |
-|---------|--------|----------|
+
+| Условие | Статус | Описание                         |
+|---------|--------|----------------------------------|
 | `file_texts` запись отсутствует | `unknown` | Файл есть, но статус не определен |
-| `processing_status = 'pending'` | `pending` | Ожидает обработки |
-| `processing_status = 'processing'` | `processing` | В процессе извлечения текста |
-| `processing_status = 'completed'` | `completed` | Текст успешно извлечен |
-| `processing_status = 'failed'` | `failed` | Ошибка при обработке |
+| `processing_status = 'pending'` | `pending` | Ожидает обработки                |
+| `processing_status = 'processing'` | `processing` | В процессе извлечения текста     |
+| `processing_status = 'completed'` | `completed` | Текст успешно извлечен           |
+| `processing_status = 'failed'` | `failed` | Ошибка при обработке             |
 
 ## 4. Расчет дополнительных метрик
 
@@ -74,7 +71,6 @@ LIMIT 1
     "original_name": "string",
     "subject": "string",
     "uploaded_at": "ISO 8601",
-    "uploaded_by": "string или null",
     "file_size": 123456
   },
   "processing_details": {
@@ -97,7 +93,7 @@ LIMIT 1
 }
 ```
 
-## 6. Кэширование (опционально, для производительности)
+## 6. Кэширование 
 
 **Логика кэширования:**
 1. Ключ кэша: `file_status:{file_id}`
