@@ -43,10 +43,7 @@ AND f.subject = :subject
 | `unprocessed` | `AND (ft.processing_status IS NULL OR ft.processing_status IN ('pending', 'failed'))` |
 | `all` | Без условия |
 
-### Фильтр по пользователю (если требуется):
-```sql
-AND f.uploaded_by = :current_user_id
-```
+
 
 ## 4. Применение сортировки
 

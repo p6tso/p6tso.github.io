@@ -46,15 +46,6 @@ WHERE ft.file_id = :file_id AND ft.processing_status = 'completed'
     - `is_processed = processing_status = 'completed'`
     - `has_error = processing_status = 'failed'`
 
-## 4. Сбор информации из MinIO (опционально)
-
-**Если требуется информация о хранилище:**
-1. Запрос метаданных объекта из MinIO по `storage_path`
-2. Получение:
-    - `last_modified` время
-    - `etag` (контрольная сумма)
-    - Размер в MinIO (для верификации)
-3. Формирование временной ссылки для скачивания (presigned URL, TTL 1 час)
 
 ## 5. Формирование ответа
 
