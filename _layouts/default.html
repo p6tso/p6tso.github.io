@@ -15,7 +15,6 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
 
     <style>
-        /* Стили для Mermaid */
         .mermaid {
             background-color: var(--pre-bg);
             border-radius: 6px;
@@ -35,7 +34,6 @@
             display: none;
         }
 
-        /* Показать только блоки с диаграммами */
         pre.mermaid {
             display: block !important;
             background: transparent !important;
@@ -49,9 +47,7 @@
 </div>
 
 <script>
-    // Функция для обработки Mermaid диаграмм
     function initMermaid() {
-        // Находим все блоки кода с классом language-mermaid
         const mermaidElements = document.querySelectorAll('code.language-mermaid');
 
         if (mermaidElements.length > 0) {
@@ -68,45 +64,37 @@
                 }
             });
 
-            // Обрабатываем каждый блок
             mermaidElements.forEach((element) => {
                 const parent = element.parentElement;
                 const mermaidContent = element.textContent.trim();
 
-                // Создаем новый div для Mermaid
                 const mermaidDiv = document.createElement('div');
                 mermaidDiv.className = 'mermaid';
                 mermaidDiv.textContent = mermaidContent;
 
-                // Заменяем родительский элемент (pre) на наш div
                 if (parent && parent.tagName === 'PRE') {
                     parent.parentNode.replaceChild(mermaidDiv, parent);
                 } else {
-                    // Если нет pre, добавляем после элемента
                     element.parentNode.insertBefore(mermaidDiv, element.nextSibling);
                     element.style.display = 'none';
                 }
             });
 
-            // Запускаем рендеринг
             mermaid.init(undefined, document.querySelectorAll('.mermaid'));
         }
     }
 
-    // Функция для Highlight.js
     function initHighlight() {
         document.querySelectorAll('pre code:not(.language-mermaid)').forEach((el) => {
             hljs.highlightElement(el);
         });
     }
 
-    // Инициализация при загрузке
     document.addEventListener('DOMContentLoaded', () => {
         initHighlight();
         initMermaid();
     });
 
-    // Если контент загружается динамически
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initMermaid);
     } else {
