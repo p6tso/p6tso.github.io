@@ -13,90 +13,87 @@ scalar Long
 scalar JSON
 
 type Mutation {
-buildHouse(input: BuildHouseInput!): House!
-updateHouseLevel(input: HouseIdInput!): House!
-updateHouseSkin(input: UpdateHouseSkinInput!): House!
-updateHouseLocation(input: UpdateHouseLocationInput!): House!
-removeHouse(input: HouseIdInput!): RemoveHousePayload!
-updatePlayerMeat: Player!
+  buildHouse(input: BuildHouseInput!): House!
+  updateHouseLevel(input: HouseIdInput!): House!
+  updateHouseSkin(input: UpdateHouseSkinInput!): House!
+  updateHouseLocation(input: UpdateHouseLocationInput!): House!
+  removeHouse(input: HouseIdInput!): RemoveHousePayload!
+  updatePlayerMeat: Player!
 
-convertMeatToBrain(input: ConvertMeatToBrainInput!): Player!
-convertBrainToGold(input: ConvertBrainToGoldInput!): Player!
+  convertMeatToBrain(input: ConvertMeatToBrainInput!): Player!
+  convertBrainToGold(input: ConvertBrainToGoldInput!): Player!
 }
 
 type Query {
-getPlayer: Player!
-getHouse(houseId: ID!): House
-getPlayerHouses: [House!]!
+  getPlayer: Player!
+  getHouse(houseId: ID!): House
+  getPlayerHouses: [House!]!
 
-getHousesInfoCfg: JSON!
-getGameLogicCfg: JSON!
+  getHousesInfoCfg: JSON!
+  getGameLogicCfg: JSON!
 }
 
 input BuildHouseInput {
-type: HouseType!
-skin: String!
-locationX: Int!
-locationY: Int!
+  type: HouseType!
+  skin: String!
+  cell: Int!
 }
 
 input UpdateHouseSkinInput {
-houseId: ID!
-newSkin: String!
+  houseId: ID!
+  newSkin: String!
 }
 
 input UpdateHouseLocationInput {
-houseId: ID!
-newLocationX: Int!
-newLocationY: Int!
+  houseId: ID!
+  newCell: Int!
 }
 
 input HouseIdInput {
-houseId: ID!
+  houseId: ID!
 }
 
 input ConvertMeatToBrainInput {
-meatToSpend: Long!
+  meatToSpend: Long!
 }
 
 input ConvertBrainToGoldInput {
-brainToSpend: Long!
+  brainToSpend: Long!
 }
 
 type RemoveHousePayload {
-success: Boolean!
-deletedHouseId: ID!
+  success: Boolean!
+  deletedHouseId: ID!
 }
 
 type Player {
-id: ID!
-username: String!
-photoUrl: String!
-meat: Long!
-gold: Long!
-brain: Long!
-boardColor: BoardColor!
-houses: [House!]!
+  id: ID!
+  username: String!
+  photoUrl: String!
+  meat: Long!
+  gold: Long!
+  brain: Long!
+  boardColor: BoardColor!
+  houses: [House!]!
 }
 
 type House {
-id: ID!
-telegramId: Long!
-type: HouseType!
-level: Int!
-skin: String!
-locationX: Int!
-locationY: Int!
+  id: ID!
+  playerId: Long!
+  type: HouseType!
+  level: Int!
+  skin: String!
+  cell: Int!
 }
 
 enum BoardColor {
-ORANGE
-GREEN
+  ORANGE
+  GREEN
 }
 
 enum HouseType {
-FARM
-DECOR
-STORAGE
+  FARM
+  DECOR
+  STORAGE
 }
 ```
