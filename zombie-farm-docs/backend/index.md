@@ -27,8 +27,6 @@ graph TB
             GQL_QUERIES[GraphQL Queries]:::frontend
             GQL_MUTATIONS[GraphQL Mutations]:::frontend
         end
-        
-        
     end
     
     subgraph "Backend (Spring Boot)"
@@ -52,8 +50,6 @@ graph TB
             TELEGRAM_AUTH[Telegram Auth Service]:::auth
             JWT_SERVICE[JWT Service]:::auth
         end
-        
-        
         
         subgraph "Persistence"
             REPOSITORIES[Spring Data Repositories]:::backend
@@ -93,19 +89,18 @@ graph TB
     TELEGRAM_AUTH --> JWT_SERVICE
     JWT_SERVICE --> POSTGRES
     
-
-    
     GAME_SERVICE --> FARM_SERVICE
     GAME_SERVICE --> ZOMBIE_SERVICE
     
     REPOSITORIES --> ENTITIES
     ENTITIES --> POSTGRES
     
-    APOLLO_CLIENT -- HTTP/HTTPS --> GQL_CONTROLLER
+    %% Основное соединение фронтенд-бэкенд
+    APOLLO_CLIENT -- "HTTP/HTTPS<br/>GraphQL API" --> GQL_CONTROLLER
     
-    %% Описание потоков данных
-    linkStyle 23 stroke:#ff6f00,stroke-width:2px,stroke-dasharray: 5 5
-    linkStyle 24 stroke:#ff6f00,stroke-width:2px,stroke-dasharray: 5 5
+    %% Удалены несуществующие ссылки
+    %% linkStyle 23 stroke:#ff6f00,stroke-width:2px,stroke-dasharray: 5 5
+    %% linkStyle 24 stroke:#ff6f00,stroke-width:2px,stroke-dasharray: 5 5
 ```
 
 ## БД
