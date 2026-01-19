@@ -29,11 +29,7 @@ graph TB
             GQL_MUTATIONS[GraphQL Mutations]:::frontend
         end
         
-        subgraph "State Management"
-            REDUX[Redux Store]:::frontend
-            GAME_STATE[Состояние игры]:::frontend
-            USER_STATE[Состояние пользователя]:::frontend
-        end
+        
     end
     
     subgraph "Backend (Spring Boot)"
@@ -58,10 +54,7 @@ graph TB
             JWT_SERVICE[JWT Service]:::auth
         end
         
-        subgraph "WebSocket"
-            WS_HANDLER[WebSocket Handler]:::backend
-            NOTIFICATION_SERVICE[Notification Service]:::backend
-        end
+        
         
         subgraph "Persistence"
             REPOSITORIES[Spring Data Repositories]:::backend
@@ -77,7 +70,6 @@ graph TB
     
     %% Внешние связи
     TG --> TELEGRAM_AUTH
-    APOLLO_CLIENT --> WS
     
     %% Фронтенд связи
     VITE --> REACT
@@ -92,7 +84,6 @@ graph TB
     %% Бэкенд связи
     SPRING_APP --> GQL_CONTROLLER
     SPRING_APP --> AUTH_CONTROLLER
-    SPRING_APP --> WS_HANDLER
     
     GQL_CONTROLLER --> SCHEMA
     SCHEMA --> DATA_LOADERS
@@ -124,65 +115,47 @@ graph TB
 ```mermaid
 erDiagram
     PLAYERS {
-        bigserial id PK "PRIMARY KEY"
-        varchar username "NOT NULL"
-        bigint meat "DEFAULT 0"
-        bigint gold "DEFAULT 0"
-        bigint brain "DEFAULT 0"
-        board_color board_color "NULL"
-        timestamptz last_meat_update "DEFAULT CURRENT_TIMESTAMP"
-        varchar photo_url "DEFAULT ''"
+        bigint id PK
+        varchar username
+        bigint meat
+        bigint gold
+        bigint brain
+        enum board_color
+        timestamp last_meat_update
+        varchar photo_url
     }
     
     USERS_AUTH {
-        bigint telegram_id PK "PRIMARY KEY"
-        bigint inner_id FK "REFERENCES players(id)"
-        timestamptz created_at "DEFAULT CURRENT_TIMESTAMP"
+        bigint telegram_id PK
+        bigint inner_id FK
+        timestamp created_at
     }
     
     HOUSES {
-        bigserial id PK "PRIMARY KEY"
-        bigint player_id FK "REFERENCES players(id)"
-        house_type type "NOT NULL"
-        int level "DEFAULT 0"
-        varchar skin 
-        int cell "DEFAULT -1"
+        bigint id PK
+        bigint player_id FK
+        enum type
+        int level
+        varchar skin
+        int cell
     }
     
     PLAYERS ||--o{ HOUSES : "has"
     PLAYERS ||--|| USERS_AUTH : "authenticated_by"
     
-    PLAYERS {
-        ENUM board_color VALUES: "ORANGE, GREEN"
+    PLAYERS }|--|{ BOARD_COLOR : "has"
+    HOUSES }|--|{ HOUSE_TYPE : "has"
+    
+    BOARD_COLOR {
+        string value "ORANGE"
+        string value "GREEN"
     }
     
-    HOUSES {
-        ENUM house_type VALUES: "FARM, DECOR, STORAGE"
+    HOUSE_TYPE {
+        string value "FARM"
+        string value "DECOR"
+        string value "STORAGE"
     }
-    
-    note right of PLAYERS
-        Хранит основную информацию
-        о игроке:
-        - Ресурсы (meat, gold, brain)
-        - Цвет доски
-        - URL аватарки
-        - Последнее обновление мяса
-    end note
-    
-    note right of USERS_AUTH
-        Связывает Telegram ID
-        с внутренним ID игрока.
-        Один Telegram ID = один игрок.
-        Создается при первой аутентификации.
-    end note
-    
-    note right of HOUSES
-        Строения игрока:
-        - Расположены в ячейках (cell)
-        - Имеют уровень и скин
-        - UNIQUE: один игрок - одна ячейка
-        - cell = -1 означает "не размещено"
-    end note
 ```
 
 ## Интеграции
