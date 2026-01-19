@@ -1,8 +1,6 @@
 # Zombie-farm Backend
 
 ## Архитектура
-* Серверная часть приложения представляет собой монолит на java
-## БД
 
 ```mermaid
 graph TB
@@ -85,7 +83,6 @@ graph TB
     VITE --> REACT
     REACT --> PHASER
     REACT --> APOLLO_CLIENT
-    REACT --> REDUX
     PHASER --> GAME_LOGIC
     GAME_LOGIC --> APOLLO_CLIENT
     UI_COMPONENTS --> APOLLO_CLIENT
@@ -104,21 +101,16 @@ graph TB
     
     AUTH_CONTROLLER --> TELEGRAM_AUTH
     TELEGRAM_AUTH --> JWT_SERVICE
-    JWT_SERVICE --> REDIS
+    JWT_SERVICE --> POSTGRES
     
-    WS_HANDLER --> NOTIFICATION_SERVICE
-    NOTIFICATION_SERVICE --> GAME_SERVICE
+
     
-    %% Сервисы
     GAME_SERVICE --> FARM_SERVICE
     GAME_SERVICE --> ZOMBIE_SERVICE
-    GAME_SERVICE --> BATTLE_SERVICE
     
     REPOSITORIES --> ENTITIES
     ENTITIES --> POSTGRES
-    REPOSITORIES --> REDIS
     
-    %% Связь фронтенд-бэкенд
     APOLLO_CLIENT -- HTTP/HTTPS --> GQL_CONTROLLER
     APOLLO_CLIENT -- WebSocket --> WS_HANDLER
     
@@ -126,6 +118,73 @@ graph TB
     linkStyle 23 stroke:#ff6f00,stroke-width:2px,stroke-dasharray: 5 5
     linkStyle 24 stroke:#ff6f00,stroke-width:2px,stroke-dasharray: 5 5
 ```
+
+## БД
+
+```mermaid
+erDiagram
+    PLAYERS {
+        bigserial id PK "PRIMARY KEY"
+        varchar username "NOT NULL"
+        bigint meat "DEFAULT 0"
+        bigint gold "DEFAULT 0"
+        bigint brain "DEFAULT 0"
+        board_color board_color "NULL"
+        timestamptz last_meat_update "DEFAULT CURRENT_TIMESTAMP"
+        varchar photo_url "DEFAULT ''"
+    }
+    
+    USERS_AUTH {
+        bigint telegram_id PK "PRIMARY KEY"
+        bigint inner_id FK "REFERENCES players(id)"
+        timestamptz created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+    
+    HOUSES {
+        bigserial id PK "PRIMARY KEY"
+        bigint player_id FK "REFERENCES players(id)"
+        house_type type "NOT NULL"
+        int level "DEFAULT 0"
+        varchar skin 
+        int cell "DEFAULT -1"
+    }
+    
+    PLAYERS ||--o{ HOUSES : "has"
+    PLAYERS ||--|| USERS_AUTH : "authenticated_by"
+    
+    PLAYERS {
+        ENUM board_color VALUES: "ORANGE, GREEN"
+    }
+    
+    HOUSES {
+        ENUM house_type VALUES: "FARM, DECOR, STORAGE"
+    }
+    
+    note right of PLAYERS
+        Хранит основную информацию
+        о игроке:
+        - Ресурсы (meat, gold, brain)
+        - Цвет доски
+        - URL аватарки
+        - Последнее обновление мяса
+    end note
+    
+    note right of USERS_AUTH
+        Связывает Telegram ID
+        с внутренним ID игрока.
+        Один Telegram ID = один игрок.
+        Создается при первой аутентификации.
+    end note
+    
+    note right of HOUSES
+        Строения игрока:
+        - Расположены в ячейках (cell)
+        - Имеют уровень и скин
+        - UNIQUE: один игрок - одна ячейка
+        - cell = -1 означает "не размещено"
+    end note
+```
+
 ## Интеграции
 * Для интеграции в проекте использован graphql из-за своей гибкости
 * Контракт
