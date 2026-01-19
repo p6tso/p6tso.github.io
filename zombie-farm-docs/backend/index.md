@@ -11,7 +11,6 @@ graph TB
     classDef external fill:#fce4ec,stroke:#880e4f,stroke-width:2px
     
     TG[Telegram API]:::external
-    WS[WebSocket Server]:::external
     
     subgraph "Frontend (React + Vite + Phaser)"
         VITE[Vite Dev Server]:::frontend
@@ -103,7 +102,6 @@ graph TB
     ENTITIES --> POSTGRES
     
     APOLLO_CLIENT -- HTTP/HTTPS --> GQL_CONTROLLER
-    APOLLO_CLIENT -- WebSocket --> WS_HANDLER
     
     %% Описание потоков данных
     linkStyle 23 stroke:#ff6f00,stroke-width:2px,stroke-dasharray: 5 5
