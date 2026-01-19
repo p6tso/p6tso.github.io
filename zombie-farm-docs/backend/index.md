@@ -7,7 +7,8 @@
 ## Интеграции
 * Для интеграции в проекте использован graphql из-за своей гибкости
 * Контракт
- ```graphQL
+
+```
 scalar DateTime
 scalar Long
 scalar JSON
