@@ -27,7 +27,6 @@ erDiagram
         string format "nullable"
         boolean required
         string constraints "nullable, JSON строка"
-        int order_index
     }
 
     ENDPOINT {
