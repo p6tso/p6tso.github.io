@@ -37,4 +37,3 @@ erDiagram
         string path
         string description "nullable"
     }
-```
