@@ -3,14 +3,7 @@
 ## Схема
 
 ```mermaid
-
 erDiagram
-
-    JSON_BODY ||--o{ JSON_BODY_FIELD : "body_id"
-    JSON_BODY_FIELD ||--o{ JSON_BODY_FIELD : "parent_id"
-
-    ENDPOINT ||--o{ JSON_BODY : "endpoint_id"
-
     JSON_BODY {
         bigint id PK
         bigint endpoint_id FK
@@ -40,3 +33,8 @@ erDiagram
         string path
         string description "nullable"
     }
+    JSON_BODY ||--o{ JSON_BODY_FIELD : "body_id"
+    JSON_BODY_FIELD ||--o{ JSON_BODY_FIELD : "parent_id"
+
+    ENDPOINT ||--o{ JSON_BODY : "endpoint_id"
+```
