@@ -3,7 +3,9 @@
 ## Схема
 
 ```mermaid
+
 erDiagram
+
     JSON_BODY ||--o{ JSON_BODY_FIELD : "body_id"
     JSON_BODY_FIELD ||--o{ JSON_BODY_FIELD : "parent_id"
 
