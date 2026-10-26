@@ -40,9 +40,11 @@ erDiagram
         uuid id PK
         string name
     }
-    JSON_BODY ||--o{ JSON_BODY_FIELD : "body_id"
-    JSON_BODY_FIELD ||--o{ JSON_BODY_FIELD : "parent_id"
+    JSON_BODY ||--}{ JSON_BODY_FIELD : "body_id"
+    JSON_BODY_FIELD ||--|o JSON_BODY_FIELD : "parent_id"
 
-    METHOD ||--o{ JSON_BODY : "method_id"
-    ENDPOINT ||--o{ METHOD : "endpoint_id"
+    METHOD ||--{ JSON_BODY : "method_id"
+    JSON_BODY ||--|| METHOD : "body_id"
+    
+    ENDPOINT ||--}{ METHOD : "endpoint_id"
 ```
