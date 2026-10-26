@@ -6,7 +6,7 @@
 erDiagram
     JSON_BODY {
         bigint id PK
-        bigint endpoint_id FK
+        bigint method_id FK
         enum type "request|response"
         enum method "nullable, GET|POST|PUT|PATCH|DELETE|..."
         int http_code "nullable"
@@ -28,13 +28,21 @@ erDiagram
         string constraints "nullable, JSON строка"
     }
 
-    ENDPOINT {
+    METHOD {
         bigint id PK
+        uuid endpoint_id FK 
+        bigint current_response_id FK
         string path
         string description "nullable"
+    }
+    
+    ENDPOINT {
+        uuid id PK
+        string name
     }
     JSON_BODY ||--o{ JSON_BODY_FIELD : "body_id"
     JSON_BODY_FIELD ||--o{ JSON_BODY_FIELD : "parent_id"
 
-    ENDPOINT ||--o{ JSON_BODY : "endpoint_id"
+    METHOD ||--o{ JSON_BODY : "method_id"
+    ENDPOINT ||--o{ METHOD : "endpoint_id"
 ```
