@@ -8,12 +8,12 @@ erDiagram
     JSON_BODY {
         bigint id PK
         bigint method_id FK
-        string type "request or response"
-        string method "nullable, HTTP method"
+        enum type "request | response"
+        enum method "nullable, HTTP method"
         int http_code "nullable"
-        string description "nullable"
-        string name
-        string payload "JSON string"
+        varchar(512) description "nullable"
+        varchar(64) name
+        json payload "JSON string"
         timestamp created_at
     }
 
@@ -21,25 +21,24 @@ erDiagram
         bigint id PK
         bigint body_id FK
         bigint parent_id FK "nullable, nested field"
-        string name
-        string type "string, number, integer, boolean, object, array, null"
+        varchar(64) name
+        enum type "string, number, integer, boolean, object, array, null"
         boolean is_array
-        string format "nullable"
+        varchar(256) format "nullable"
         boolean required
-        string constraints "nullable, JSON string"
     }
 
     METHOD {
         bigint id PK
         uuid endpoint_id FK
         bigint current_response_id FK
-        string path
-        string description "nullable"
+        varchar(128) path
+        varchar(512) description "nullable"
     }
 
     ENDPOINT {
         uuid id PK
-        string name
+        varchar(64) name
     }
 
     METHOD ||--o{ JSON_BODY : "method_id"
