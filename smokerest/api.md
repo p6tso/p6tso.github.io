@@ -14,32 +14,30 @@ Request:
       "path": "/users",
       "description": "Users endpoint",
       "method": "POST",
-      "requests": [
-        {
+      "request": {
           "name": "Create user",
           "description": "User creation request",
           "payload": {
             "name": "John",
             "age": 25
-          },
-          "responses": [
-            {
-              "name": "Success",
-              "httpCode": 201,
-              "payload": {
-                "id": 1,
-                "name": "John",
-                "age": 25
-              }
-            },
-            {
-              "name": "Bad request",
-              "httpCode": 400,
-              "payload": {
-                "error": "Invalid data"
-              }
-            }
-          ]
+          }
+      },  
+      "responses": [
+        {
+          "name": "Success",
+          "httpCode": 201,
+          "payload": {
+            "id": 1,
+            "name": "John",
+            "age": 25
+          }
+        },
+        {
+          "name": "Bad request",
+          "httpCode": 400,
+          "payload": {
+            "error": "Invalid data"
+          }
         }
       ]
     }
@@ -83,7 +81,7 @@ Response:
       "path": "/users",
       "method": "POST",
       "description": "Users endpoint",
-      "requests": [
+      "request":
         {
           "id": 10,
           "name": "Create user",
@@ -91,20 +89,19 @@ Response:
           "payload": {
             "name": "John",
             "age": 25
+          }
+        }  
+      "responses": [
+        {
+          "id": 11,
+          "name": "Success",
+          "httpCode": 201,
+          "payload": {
+            "id": 1,
+            "name": "John",
+            "age": 25
           },
-          "responses": [
-            {
-              "id": 11,
-              "name": "Success",
-              "httpCode": 201,
-              "payload": {
-                "id": 1,
-                "name": "John",
-                "age": 25
-              },
-              "isActive": true
-            }
-          ]
+          "isActive": true
         }
       ]
     }
@@ -128,16 +125,6 @@ Response:
 {
   "success": true,
   "currentResponseId": 12
-}
-```
-
-DELETE `/api/endpoints/{endpointId}`
-
-Response:
-
-```
-{
-  "success": true
 }
 ```
 
