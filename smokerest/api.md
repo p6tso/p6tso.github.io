@@ -156,7 +156,6 @@ Response:
         },
         "fields": [
           {
-            "id": 1,
             "name": "name",
             "type": "string",
             "isArray": false,
@@ -165,7 +164,6 @@ Response:
             "children": []
           },
           {
-            "id": 2,
             "name": "age",
             "type": "integer",
             "isArray": false,
@@ -177,7 +175,6 @@ Response:
       },
       "responses": [
         {
-          "id": 11,
           "name": "Success",
           "httpCode": 201,
           "payload": {
@@ -186,7 +183,6 @@ Response:
           },
           "fields": [
             {
-              "id": 3,
               "name": "id",
               "type": "integer",
               "isArray": false,
@@ -195,7 +191,6 @@ Response:
               "children": []
             },
             {
-              "id": 4,
               "name": "name",
               "type": "string",
               "isArray": false,
